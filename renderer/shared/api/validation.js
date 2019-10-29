@@ -48,10 +48,10 @@ export async function fetchFlipHashes(type) {
  * @example
  *  submitShortAnswers({answers: [{answer: 1, easy: false}, {answer: 2, easy: false}], nonce: 0, epoch: 0})
  */
-export async function submitShortAnswers(answers, nonce, epoch) {
+export async function submitShortAnswers(answers) {
   const {data} = await api().post('/', {
     method: 'flip_submitShortAnswers',
-    params: [{answers, nonce, epoch}],
+    params: [{answers}],
     id: 1,
   })
   const {result} = data

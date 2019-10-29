@@ -2,13 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {rem, position, rgba} from 'polished'
 import {FiCheck, FiZap, FiXCircle} from 'react-icons/fi'
+
 import Flex from '../../../shared/components/flex'
 import {Fill, Box} from '../../../shared/components'
 import theme from '../../../shared/theme'
 import FlipImage from '../../flips/components/flip-image'
-import {
+import useValidation, {
   AnswerType,
   hasAnswer,
+  PICK,
 } from '../../../shared/providers/validation-context'
 import Spinner from './spinner'
 
@@ -26,7 +28,9 @@ const style = {
   borderRadius: rem(12),
 }
 
-function FlipThumbnails({flips, currentIndex, onPick}) {
+// eslint-disable-next-line react/prop-types
+function FlipThumbnails({type}) {
+  const [{[`${type}Flips`]: flips, currentIndex}, dispatch] = useValidation()
   return (
     <Flex
       align="center"
@@ -41,18 +45,12 @@ function FlipThumbnails({flips, currentIndex, onPick}) {
             <Thumb
               {...flip}
               isCurrent={currentIndex === idx}
-              onClick={() => onPick(idx)}
+              onClick={() => dispatch({type: PICK, idx})}
             />
           )
       )}
     </Flex>
   )
-}
-
-FlipThumbnails.propTypes = {
-  currentIndex: PropTypes.number.isRequired,
-  flips: PropTypes.arrayOf(PropTypes.object).isRequired,
-  onPick: PropTypes.func,
 }
 
 function Thumb({hash, urls, answer, ready, failed, isCurrent, onClick}) {

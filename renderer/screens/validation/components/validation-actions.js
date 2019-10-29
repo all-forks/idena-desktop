@@ -1,11 +1,19 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {margin, rem} from 'polished'
 import {Button} from '../../../shared/components'
 import Flex from '../../../shared/components/flex'
 import theme from '../../../shared/theme'
+import useValidation, {
+  SessionType,
+  submitShortAnswers,
+  submitLongAnswers,
+} from '../../../shared/providers/validation-context'
+import Timer from './timer'
 
-function ValidationActions({onSubmitAnswers, canSubmit, countdown}) {
+// eslint-disable-next-line react/prop-types
+export default function ValidationActions({type}) {
+  const [{canSubmit}, dispatch] = useValidation()
+  const isShort = type === SessionType.Short
   return (
     <Flex
       justify="space-between"
@@ -17,23 +25,18 @@ function ValidationActions({onSubmitAnswers, canSubmit, countdown}) {
         &nbsp;
       </Flex>
       <Flex justify="center" css={{width: '33%'}}>
-        {countdown}
+        {isShort && <Timer type={type} />}
       </Flex>
-      <Flex justify="flex-end" css={{flex: 1}}>
-        {
-          <Button onClick={onSubmitAnswers} disabled={!canSubmit}>
-            Submit answers
-          </Button>
-        }
+      <Flex justify="flex-end" css={{flex: 1}} s>
+        <Button
+          onClick={() =>
+            dispatch(isShort ? submitShortAnswers() : submitLongAnswers())
+          }
+          disabled={!canSubmit}
+        >
+          Submit answers
+        </Button>
       </Flex>
     </Flex>
   )
 }
-
-ValidationActions.propTypes = {
-  onSubmitAnswers: PropTypes.func,
-  canSubmit: PropTypes.bool,
-  countdown: PropTypes.node,
-}
-
-export default ValidationActions

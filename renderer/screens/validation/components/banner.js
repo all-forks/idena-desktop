@@ -56,15 +56,10 @@ function ValidationSoon() {
 
 function ValidationRunning() {
   const {currentPeriod} = useEpochState()
-  const {
-    shortAnswers,
-    longAnswers,
-    shortAnswersSubmitted,
-  } = useValidationState()
+  const {shortAnswersSubmitted, hasAllAnswers} = useValidationState()
 
   const isShortSession = currentPeriod === EpochPeriod.ShortSession
   const sessionType = isShortSession ? SessionType.Short : SessionType.Long
-  const hasAnswers = isShortSession ? shortAnswers.length : longAnswers.length
 
   const {
     secondsLeftForShortSession,
@@ -110,7 +105,7 @@ function ValidationRunning() {
           />
           <Fill bg="rgba(0,0,0,0.1)" />
         </Flex>
-        {hasAnswers ? (
+        {hasAllAnswers ? (
           <Box p={theme.spacings.normal}>
             Waiting for the end of {currentPeriod}
           </Box>
@@ -122,7 +117,7 @@ function ValidationRunning() {
           </Box>
         )}
       </Flex>
-      {!hasAnswers && !!seconds && canValidate && (
+      {!hasAllAnswers && !!seconds && canValidate && (
         <Flex css={padding(theme.spacings.normal)}>
           <Divider vertical m={rem(theme.spacings.medium16)} />
           <Link href={`/validation/${isShortSession ? 'short' : 'long'}`}>

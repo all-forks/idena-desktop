@@ -7,25 +7,40 @@ import Arrow from './arrow'
 import {reorderList} from '../../../shared/utils/arr'
 import Spinner from './spinner'
 import theme from '../../../shared/theme'
-import {
+import useValidation, {
   AnswerType,
   hasAnswer,
   SessionType,
-  useValidationDispatch,
   PREV,
   NEXT,
   ANSWER,
-  useValidationState,
   IRRELEVANT_WORDS_TOGGLED,
 } from '../../../shared/providers/validation-context'
 
-export default function ValidationScene({
-  flip: {urls, answer, ready, orders, failed, hash, words},
-  isFirst,
-  isLast,
-  type,
-}) {
-  const dispatch = useValidationDispatch()
+export default function ValidationScene({type}) {
+  const [{loading, ...state}, dispatch] = useValidation()
+
+  if (loading) {
+    return <Spinner />
+  }
+
+  const {
+    currentIndex,
+    [`${type}Flips`]: {
+      [currentIndex]: {urls, ready, orders, failed, hash, words} = {
+        urls: [],
+        ready: false,
+        orders: [],
+        failed: false,
+        hash: null,
+        words: [],
+      },
+    },
+    [`${type}Answers`]: {[currentIndex]: {answer} = {answer: 0}},
+    isFirst,
+    isLast,
+  } = state
+
   return (
     <Flex
       justify="space-between"
@@ -42,7 +57,7 @@ export default function ValidationScene({
           direction="column"
           justify="center"
           align="center"
-          css={style(answer, AnswerType.Left)}
+          css={composeStyle(answer, AnswerType.Left)}
         >
           {ready &&
             !failed &&
@@ -56,11 +71,15 @@ export default function ValidationScene({
                   overflow: 'hidden',
                 }}
                 onClick={() =>
-                  dispatch({type: ANSWER, option: AnswerType.Left})
+                  dispatch({
+                    type: ANSWER,
+                    option: AnswerType.Left,
+                    sessionType: type,
+                  })
                 }
               >
                 {/* eslint-disable-next-line no-use-before-define */}
-                <div style={blurStyle(src)} />
+                <div style={composeBlur(src)} />
                 <img
                   alt="currentFlip"
                   height={110}
@@ -75,7 +94,7 @@ export default function ValidationScene({
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    zIndex: 2,
+                    zIndex: 1,
                     textAlign: 'center',
                     objectFit: 'contain',
                     objectPosition: 'center',
@@ -112,7 +131,7 @@ export default function ValidationScene({
           direction="column"
           justify="center"
           align="center"
-          css={style(answer, AnswerType.Right)}
+          css={composeStyle(answer, AnswerType.Right)}
         >
           {ready &&
             !failed &&
@@ -126,11 +145,15 @@ export default function ValidationScene({
                   overflow: 'hidden',
                 }}
                 onClick={() =>
-                  dispatch({type: ANSWER, option: AnswerType.Right})
+                  dispatch({
+                    type: ANSWER,
+                    option: AnswerType.Right,
+                    sessionType: type,
+                  })
                 }
               >
                 {/* eslint-disable-next-line no-use-before-define */}
-                <div style={blurStyle(src)} />
+                <div style={composeBlur(src)} />
                 <img
                   alt="currentFlip"
                   style={{
@@ -143,7 +166,7 @@ export default function ValidationScene({
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    zIndex: 2,
+                    zIndex: 1,
                     textAlign: 'center',
                     objectFit: 'contain',
                     objectPosition: 'center',
@@ -190,21 +213,12 @@ export default function ValidationScene({
 }
 
 ValidationScene.propTypes = {
-  flip: PropTypes.shape({
-    pics: PropTypes.arrayOf(PropTypes.object),
-    ready: PropTypes.bool.isRequired,
-    orders: PropTypes.arrayOf(PropTypes.array),
-    answer: PropTypes.number,
-  }),
-  isFirst: PropTypes.bool,
-  isLast: PropTypes.bool,
   type: PropTypes.string.isRequired,
 }
 
 // eslint-disable-next-line react/prop-types
 function Words({words}) {
-  const {flips, currentIndex} = useValidationState()
-  const dispatch = useValidationDispatch()
+  const [{longFlips: flips, currentIndex}, dispatch] = useValidation()
 
   const haveWords = words && words.length
   const {irrelevantWords} = flips[currentIndex]
@@ -265,7 +279,7 @@ function Words({words}) {
               {[
                 'Loading keywords to moderate the story 📬🏗🔤',
                 'Feel free to skip this step.',
-              ].map((w, idx) => (
+              ].map((word, idx) => (
                 <Box
                   key={`desc-${idx}`}
                   style={{
@@ -278,7 +292,7 @@ function Words({words}) {
                     ),
                   }}
                 >
-                  {w}
+                  {word}
                 </Box>
               ))}
             </>
@@ -338,14 +352,14 @@ const oppositeAnsweredStyle = {
   opacity: 0.3,
 }
 
-const blurStyle = src => ({
+const composeBlur = src => ({
   background: `center center / cover no-repeat url(${src})`,
   filter: 'blur(6px)',
   ...cover(),
   zIndex: 1,
 })
 
-function style(answer, target) {
+function composeStyle(answer, target) {
   if (!answer || answer === AnswerType.None) {
     return defaultStyle
   }

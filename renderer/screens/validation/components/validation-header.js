@@ -4,8 +4,10 @@ import {margin, rem, padding} from 'polished'
 import {Heading, Box} from '../../../shared/components'
 import Flex from '../../../shared/components/flex'
 import theme from '../../../shared/theme'
+import useValidation from '../../../shared/providers/validation-context'
 
-function ValidationHeader({type, currentIndex, total, children}) {
+function ValidationHeader({type, children}) {
+  const [{currentIndex, total}] = useValidation()
   const isShort = type.toLowerCase() === 'short'
   return (
     <Flex justify="space-between" align="center" css={margin(0, 0, rem(44))}>
@@ -25,8 +27,6 @@ function ValidationHeader({type, currentIndex, total, children}) {
 
 ValidationHeader.propTypes = {
   type: PropTypes.string.isRequired,
-  currentIndex: PropTypes.number.isRequired,
-  total: PropTypes.number.isRequired,
   children: PropTypes.node,
 }
 

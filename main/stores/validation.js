@@ -5,8 +5,8 @@ const {dbPath} = require('./setup')
 const adapter = new FileSync(dbPath('validation.json'))
 const db = low(adapter)
 
-const initialState = {shortAnswers: [], longAnswers: [], epoch: null}
-db.defaults(initialState).write()
+// const initialState = {shortAnswers: [], longAnswers: [], epoch: null}
+// db.defaults(initialState).write()
 
 module.exports = {
   getValidation() {

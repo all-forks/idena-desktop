@@ -1,89 +1,66 @@
 import React, {useEffect, useState} from 'react'
-import Router from 'next/router'
 import {backgrounds, padding, rem, position} from 'polished'
+import {useRouter} from 'next/router'
+
 import ValidationHeader from '../../screens/validation/components/validation-header'
-import Timer from '../../screens/validation/components/timer'
 import ValidationScene from '../../screens/validation/components/validation-scene'
 import ValidationActions from '../../screens/validation/components/validation-actions'
 import FlipThumbnails from '../../screens/validation/components/flip-thumbnails'
 import Flex from '../../shared/components/flex'
 import {useInterval} from '../../shared/hooks/use-interval'
 import theme from '../../shared/theme'
-import {useEpochState, EpochPeriod} from '../../shared/providers/epoch-context'
+import useEpoch, {EpochPeriod} from '../../shared/providers/epoch-context'
 import {Modal, Box, SubHeading, Text, Button} from '../../shared/components'
-import {
-  submitShortAnswers,
-  useValidationDispatch,
-  useValidationState,
-  START_FETCH_FLIPS,
-  PREV,
-  NEXT,
-  ANSWER,
-  PICK,
+import useValidation, {
   SessionType,
   fetchFlips,
   SHOW_EXTRA_FLIPS,
 } from '../../shared/providers/validation-context'
-import Spinner from '../../screens/validation/components/spinner'
 import {useTimeout} from '../../shared/hooks/use-timeout'
 
 const EXTRA_FLIPS_DELAY = 35 * 1000
 
 function ShortSession() {
-  const state = useValidationState()
-  const dispatch = useValidationDispatch()
-  const epoch = useEpochState()
-
-  useEffect(() => {
-    if (epoch) {
-      const {currentPeriod} = epoch
-
-      const isValidation = [
-        EpochPeriod.ShortSession,
-        EpochPeriod.LongSession,
-      ].includes(currentPeriod)
-
-      const missedShortAnswers =
-        currentPeriod === EpochPeriod.LongSession && !state.shortAnswers.length
-
-      if (!isValidation || missedShortAnswers) {
-        Router.push('/dashboard')
-      }
-    }
-  }, [epoch, state.shortAnswers.length])
-
-  const [showModal, setShowModal] = useState(false)
-  useEffect(() => {
-    if (state.shortAnswersSubmitted) {
-      setShowModal(true)
-    }
-  }, [state.shortAnswersSubmitted])
-
-  useEffect(() => {
-    if (!state.ready && !state.shortAnswersSubmitted) {
-      dispatch({type: START_FETCH_FLIPS})
-    }
-  }, [dispatch, state.ready, state.shortAnswersSubmitted])
+  const [
+    {ready, shortAnswers, shortAnswersSubmitted},
+    dispatch,
+  ] = useValidation()
+  const [{currentPeriod, isValidationRunning}] = useEpoch()
 
   useInterval(
-    async () => {
-      await fetchFlips(dispatch, SessionType.Short, state.flips)
-    },
-    state.ready || state.shortAnswersSubmitted ? null : 1000 * 1,
+    () => dispatch(fetchFlips(SessionType.Short)),
+    ready ? null : 1000 * 1,
     true
   )
 
+  const router = useRouter()
+
+  useEffect(() => {
+    const shortAnswersMissing = !shortAnswers.length
+
+    if (
+      !isValidationRunning ||
+      (currentPeriod &&
+        currentPeriod === EpochPeriod.LongSession &&
+        shortAnswersMissing)
+    ) {
+      router.push('/dashboard')
+    }
+  }, [currentPeriod, isValidationRunning, router, shortAnswers.length])
+
+  const [showModal, setShowModal] = useState(false)
+
+  useEffect(() => {
+    if (shortAnswersSubmitted) {
+      setShowModal(true)
+    }
+  }, [shortAnswersSubmitted])
+
   useTimeout(() => {
-    if (!state.ready && !state.shortAnswersSubmitted) {
+    if (!ready && !shortAnswersSubmitted) {
       dispatch({type: SHOW_EXTRA_FLIPS})
     }
   }, EXTRA_FLIPS_DELAY)
-
-  const handleSubmitAnswers = async () => {
-    await submitShortAnswers(dispatch, state.flips, epoch.epoch)
-  }
-
-  const availableFlipsLength = state.flips.filter(x => !x.hidden).length
 
   return (
     <Flex
@@ -99,44 +76,21 @@ function ShortSession() {
         overflow: 'hidden',
       }}
     >
-      <ValidationHeader
-        type={SessionType.Short}
-        currentIndex={state.currentIndex}
-        total={availableFlipsLength}
-      />
+      <ValidationHeader type={SessionType.Short} />
       <Flex
         direction="column"
         align="center"
         flex={1}
         css={position('relative')}
       >
-        {(state.loading || state.shortAnswersSubmitted) && <Spinner />}
-        {!state.shortAnswersSubmitted && state.flips[state.currentIndex] && (
-          <ValidationScene
-            flip={state.flips[state.currentIndex]}
-            onPrev={() => dispatch({type: PREV})}
-            onNext={() => dispatch({type: NEXT})}
-            onAnswer={option => dispatch({type: ANSWER, option})}
-            isFirst={state.currentIndex === 0}
-            isLast={state.currentIndex >= availableFlipsLength - 1}
-            type={SessionType.Short}
-          />
-        )}
+        <ValidationScene type={SessionType.Short} />
       </Flex>
-      <ValidationActions
-        canSubmit={state.canSubmit}
-        onSubmitAnswers={handleSubmitAnswers}
-        countdown={<Timer type={SessionType.Short} />}
-      />
-      <FlipThumbnails
-        currentIndex={state.currentIndex}
-        flips={state.flips}
-        onPick={index => dispatch({type: PICK, index})}
-      />
+      <ValidationActions type={SessionType.Short} />
+      <FlipThumbnails type={SessionType.Short} />
       <InviteQualificationModal
         show={showModal}
         onHide={() => setShowModal(false)}
-        onSubmit={() => Router.push('/validation/long')}
+        onSubmit={() => router.push('/validation/long')}
       />
     </Flex>
   )

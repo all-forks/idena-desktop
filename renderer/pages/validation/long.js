@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import Router from 'next/router'
+import {useRouter} from 'next/router'
 import {backgrounds, rem, padding, position} from 'polished'
 
 import ValidationHeader from '../../screens/validation/components/validation-header'
@@ -15,74 +15,48 @@ import {
   Text,
   Button,
 } from '../../shared/components'
-import Timer from '../../screens/validation/components/timer'
-import {useEpochState, EpochPeriod} from '../../shared/providers/epoch-context'
 import theme from '../../shared/theme'
 import Layout from '../../shared/components/layout'
-import {
-  useValidationDispatch,
-  submitLongAnswers,
-  START_FETCH_FLIPS,
-  PREV,
-  NEXT,
-  ANSWER,
-  PICK,
-  useValidationState,
-  SessionType,
+import useValidation, {
   fetchFlips,
+  SessionType,
   WORDS_FETCHED,
 } from '../../shared/providers/validation-context'
-import Spinner from '../../screens/validation/components/spinner'
 import Modal from '../../shared/components/modal'
 import useRpc from '../../shared/hooks/use-rpc'
 import {useInterval} from '../../shared/hooks/use-interval'
 import vocabulary from '../../screens/flips/utils/words'
+import useEpoch from '../../shared/providers/epoch-context'
 
 export default function LongValidation() {
-  const state = useValidationState()
-  const dispatch = useValidationDispatch()
-  const epoch = useEpochState()
+  const [
+    {shortAnswers, longAnswersSubmitted: answersSubmitted},
+    dispatch,
+  ] = useValidation()
+
+  const [{isValidationRunning}] = useEpoch()
+
+  const router = useRouter()
 
   useEffect(() => {
-    if (
-      epoch &&
-      ![EpochPeriod.ShortSession, EpochPeriod.LongSession].includes(
-        epoch.currentPeriod
-      )
-    ) {
-      Router.push('/dashboard')
+    if (!isValidationRunning || answersSubmitted) {
+      router.push('/dashboard')
     }
-  }, [epoch])
+  }, [answersSubmitted, isValidationRunning, router])
+
+  useEffect(() => dispatch(fetchFlips(SessionType.Long)), [dispatch])
 
   const [showModal, setShowModal] = React.useState(false)
 
   useEffect(() => {
-    if (!state.shortAnswers.length) {
+    if (!shortAnswers.length) {
       setShowModal(true)
-      setTimeout(() => Router.push('/dashboard'), 3000)
+      setTimeout(() => router.push('/dashboard'), 5000)
     }
-  }, [state.shortAnswers.length])
-
-  useEffect(() => {
-    async function fetchData() {
-      await fetchFlips(dispatch, SessionType.Long)
-    }
-    fetchData()
-  }, [dispatch])
-
-  useEffect(() => {
-    if (state.longAnswersSubmitted) {
-      Router.push('/dashboard')
-    }
-  }, [state.longAnswersSubmitted])
-
-  useEffect(() => {
-    if (!state.ready && !state.longAnswersSubmitted) {
-      dispatch({type: START_FETCH_FLIPS})
-    }
-  }, [dispatch, state.longAnswersSubmitted, state.ready])
+  }, [router, shortAnswers.length])
 
   const words = useWords()
+
   useEffect(() => {
     if (words) {
       dispatch({
@@ -91,12 +65,6 @@ export default function LongValidation() {
       })
     }
   }, [dispatch, words])
-
-  const handleSubmitAnswers = async () => {
-    await submitLongAnswers(dispatch, state.flips, epoch.epoch)
-  }
-
-  const availableFlipsLength = state.flips.filter(x => !x.hidden).length
 
   return (
     <Layout>
@@ -114,11 +82,7 @@ export default function LongValidation() {
           overflow: 'hidden',
         }}
       >
-        <ValidationHeader
-          type={SessionType.Long}
-          currentIndex={state.currentIndex}
-          total={availableFlipsLength}
-        >
+        <ValidationHeader type={SessionType.Long}>
           <Link href="/dashboard">
             <IconClose />
           </Link>
@@ -129,37 +93,12 @@ export default function LongValidation() {
           flex={1}
           css={position('relative')}
         >
-          {(state.longAnswersSubmitted || state.loading) && <Spinner />}
-          {!state.longAnswersSubmitted && state.flips[state.currentIndex] && (
-            <ValidationScene
-              flip={state.flips[state.currentIndex]}
-              onPrev={() => dispatch({type: PREV})}
-              onNext={() => dispatch({type: NEXT})}
-              onAnswer={option => dispatch({type: ANSWER, option})}
-              isFirst={state.currentIndex === 0}
-              isLast={state.currentIndex >= availableFlipsLength - 1}
-              type={SessionType.Long}
-            />
-          )}
+          <ValidationScene type={SessionType.Long} />
         </Flex>
-        <ValidationActions
-          canSubmit={state.canSubmit}
-          onSubmitAnswers={handleSubmitAnswers}
-          countdown={<Timer type={SessionType.Long} />}
-        />
-        <FlipThumbnails
-          currentIndex={state.currentIndex}
-          flips={state.flips}
-          onPick={index => dispatch({type: PICK, index})}
-        />
+        <ValidationActions type={SessionType.Long} />
+        <FlipThumbnails type={SessionType.Long} />
       </Flex>
-
-      <Modal
-        show={showModal}
-        onHide={() => {
-          setShowModal(false)
-        }}
-      >
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Box m="0 0 18px">
           <SubHeading>Short session is over</SubHeading>
           <Text>
@@ -169,11 +108,7 @@ export default function LongValidation() {
         </Box>
         <Flex align="center" justify="flex-end">
           <Box px="4px">
-            <Button
-              onClick={() => {
-                Router.push('/dashboard')
-              }}
-            >
+            <Button onClick={() => router.push('/dashboard')}>
               Go to dashboard
             </Button>
           </Box>
@@ -184,8 +119,7 @@ export default function LongValidation() {
 }
 
 export function useWords() {
-  const {flips} = useValidationState()
-
+  const [{longFlips: flips}] = useValidation()
   const [{result, error}, fetchWords] = useRpc()
 
   const unfetchedWords = flips
