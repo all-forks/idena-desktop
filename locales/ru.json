@@ -1,0 +1,13 @@
+{
+  "profile": {
+    "Profile": "Профиль"
+  },
+  "settings": {
+    "Settings": "Настройки",
+    "Private key": "Приватник",
+    "Node": "Нода"
+  },
+  "errors": {
+    "Something went wrong": "Что-то пошло не так"
+  }
+}

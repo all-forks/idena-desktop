@@ -1,0 +1,13 @@
+{
+  "profile": {
+    "Profile": "Profile"
+  },
+  "settings": {
+    "Settings": "Settings",
+    "Private key": "Private key",
+    "Node": "Node"
+  },
+  "errors": {
+    "Something went wrong": "Something went wrong"
+  }
+}

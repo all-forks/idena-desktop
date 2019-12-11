@@ -2,6 +2,7 @@ import React from 'react'
 import {useRouter} from 'next/router'
 import {rem} from 'polished'
 
+import {useTranslation} from 'react-i18next'
 import Layout from '../../shared/components/layout'
 import {Heading, Drawer, Box} from '../../shared/components'
 import SendInviteForm from '../../screens/contacts/components/send-invite-form'
@@ -32,6 +33,8 @@ function Dashboard() {
 
   const {canTerminate, invites: invitesCount} = useIdentityState()
 
+  const {t} = useTranslation('profile')
+
   return (
     <InviteProvider>
       <Layout syncing={syncing} offline={offline} loading={loading}>
@@ -40,7 +43,7 @@ function Dashboard() {
           py={theme.spacings.large}
           w={rem(700, theme.fontSizes.base)}
         >
-          <Heading>Profile</Heading>
+          <Heading>{t('Profile')}</Heading>
           <Actions>
             {/*
             <IconLink icon={<i className="icon icon--share" />}>Share</IconLink>

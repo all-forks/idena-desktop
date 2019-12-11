@@ -1,7 +1,8 @@
 import React from 'react'
-
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
+import {useTranslation} from 'react-i18next'
+
 import Layout from '../../shared/components/layout'
 import {Box, Heading} from '../../shared/components'
 import theme from '../../shared/theme'
@@ -12,12 +13,13 @@ import FlipToolbar, {
 
 function SettingsLayout({children}) {
   const router = useRouter()
+  const {t} = useTranslation('settings')
 
   return (
     <Layout>
       <Box px={theme.spacings.xxxlarge} py={theme.spacings.large}>
         <Box>
-          <Heading>Settings</Heading>
+          <Heading>{t('Settings')}</Heading>
           <FlipToolbar>
             <Flex>
               <FlipToolbarItem
@@ -27,7 +29,7 @@ function SettingsLayout({children}) {
                 }}
                 isCurrent={router.pathname === '/settings'}
               >
-                Private key
+                {t('Private key')}
               </FlipToolbarItem>
               <FlipToolbarItem
                 key="node"
@@ -36,7 +38,7 @@ function SettingsLayout({children}) {
                 }}
                 isCurrent={router.pathname === '/settings/node'}
               >
-                Node
+                {t('Node')}
               </FlipToolbarItem>
             </Flex>
           </FlipToolbar>

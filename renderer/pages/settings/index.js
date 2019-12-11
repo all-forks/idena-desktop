@@ -1,6 +1,7 @@
 import React from 'react'
 import {margin, rem} from 'polished'
 import QRCode from 'qrcode.react'
+import {useTranslation} from 'react-i18next'
 
 import {
   Box,
@@ -71,6 +72,7 @@ function Settings() {
       )}
       <ExportPK />
       {runInternalNode && !useExternalNode && <ImportPK />}
+      <LocaleSwitcher />
     </SettingsLayout>
   )
 }
@@ -226,6 +228,16 @@ function PkDialog({children, onHide, ...props}) {
         </Button>
       </Flex>
     </Modal>
+  )
+}
+
+function LocaleSwitcher() {
+  const {i18n} = useTranslation()
+  return (
+    <div>
+      <button onClick={() => i18n.changeLanguage('en')}>en</button>
+      <button onClick={() => i18n.changeLanguage('ru')}>ru</button>
+    </div>
   )
 }
 
