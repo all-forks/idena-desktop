@@ -1,20 +1,19 @@
 import React from 'react'
 import {useRouter} from 'next/router'
 import {rem} from 'polished'
-
 import {useTranslation} from 'react-i18next'
+
 import Layout from '../../shared/components/layout'
 import {Heading, Drawer, Box} from '../../shared/components'
 import SendInviteForm from '../../screens/contacts/components/send-invite-form'
 import theme from '../../shared/theme'
 import {InviteProvider} from '../../shared/providers/invite-context'
-import KillMe from '../../screens/dashboard/components/kill-me'
 import Actions from '../../shared/components/actions'
 import MinerStatusSwitcher from '../../screens/dashboard/components/miner-status-switcher'
 import IconLink from '../../shared/components/icon-link'
 import ActivateInviteForm from '../../screens/dashboard/components/activate-invite-form'
 import UserInfo from '../../screens/dashboard/components/user-info'
-import NetProfile from '../../screens/dashboard/components/net-profile'
+import {NetProfile} from '../../screens/dashboard/components/net-profile'
 import {useChainState} from '../../shared/providers/chain-context'
 import KillForm from '../../screens/wallets/components/kill-form'
 import {useIdentityState} from '../../shared/providers/identity-context'
@@ -45,21 +44,18 @@ function Dashboard() {
         >
           <Heading>{t('Profile')}</Heading>
           <Actions>
-            {/*
-            <IconLink icon={<i className="icon icon--share" />}>Share</IconLink>
-            */}
             <IconLink
               disabled={invitesCount === 0}
               href="/contacts/new-invite"
               icon={<i className="icon icon--add_contact" />}
             >
-              Invite
+              {t('Invite')}
             </IconLink>
             <IconLink
               href="/flips/new"
               icon={<i className="icon icon--photo" />}
             >
-              New flip
+              {t('New flip')}
             </IconLink>
             <IconLink
               icon={<i className="icon icon--delete" />}
@@ -68,15 +64,15 @@ function Dashboard() {
                 setIsWithdrawStakeFormOpen(!isWithdrawStakeFormOpen)
               }}
             >
-              Terminate
+              {t('Terminate')}
             </IconLink>
           </Actions>
           <UserInfo />
           <MinerStatusSwitcher />
           <NetProfile />
           <ActivateInviteForm />
-          <KillMe />
         </Box>
+
         <Drawer show={isSendInviteOpen} onHide={handleCloseSendInvite}>
           <SendInviteForm
             onSuccess={() => {

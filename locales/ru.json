@@ -1,6 +1,9 @@
 {
   "profile": {
-    "Profile": "Профиль"
+    "Profile": "Профиль",
+    "Invite": "Пригласить",
+    "New flip": "Сделать флип",
+    "Terminate": "Убить идентити"
   },
   "settings": {
     "Settings": "Настройки",
