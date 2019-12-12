@@ -1,8 +1,7 @@
 import React from 'react'
-import {margin, rem} from 'polished'
+import {margin} from 'polished'
 import QRCode from 'qrcode.react'
 import {useTranslation} from 'react-i18next'
-
 import {
   Box,
   SubHeading,
@@ -12,8 +11,9 @@ import {
   Modal,
   Text,
   Field,
+  Select,
 } from '../../shared/components'
-import theme from '../../shared/theme'
+import theme, {rem} from '../../shared/theme'
 import Flex from '../../shared/components/flex'
 import useFlips from '../../shared/utils/useFlips'
 import {useNotificationDispatch} from '../../shared/providers/notification-context'
@@ -22,11 +22,14 @@ import SettingsLayout from './layout'
 import {importKey} from '../../shared/api'
 import {useNodeDispatch} from '../../shared/providers/node-context'
 import {useSettingsState} from '../../shared/providers/settings-context'
+import {loadItem} from '../../shared/utils/persist'
+import {LANGS} from '../../i18n'
 
 const {clear: clearFlips} = global.flipStore || {}
 const inviteDb = global.invitesDb || {}
 
 function Settings() {
+  const {t} = useTranslation('settings')
   const {archiveFlips} = useFlips()
   const {addNotification} = useNotificationDispatch()
   const {runInternalNode, useExternalNode} = useSettingsState()
@@ -34,37 +37,37 @@ function Settings() {
     <SettingsLayout>
       {global.isDev && (
         <>
-          <Section title="Flips">
+          <Section title={t('Flips')}>
             <Box>
               <Button
                 onClick={() => {
                   clearFlips()
-                  addNotification({title: 'Flips deleted'})
+                  addNotification({title: t('Flips deleted')})
                 }}
               >
-                Clear flips
+                {t('Clear flips')}
               </Button>
             </Box>
             <Box my={theme.spacings.small}>
               <Button
                 onClick={() => {
                   archiveFlips()
-                  addNotification({title: 'Flips archived'})
+                  addNotification({title: t('Flips archived')})
                 }}
               >
-                Archive flips
+                {t('Archive flips')}
               </Button>
             </Box>
           </Section>
-          <Section title="Invites">
+          <Section title={t('Invites')}>
             <Box my={theme.spacings.small}>
               <Button
                 onClick={() => {
                   inviteDb.clearInvites()
-                  addNotification({title: 'Invites removed'})
+                  addNotification({title: t('Invites removed')})
                 }}
               >
-                Clear invites
+                {t('Clear invites')}
               </Button>
             </Box>
           </Section>
@@ -90,14 +93,15 @@ function Section({title, children}) {
 }
 
 function ExportPK() {
+  const {t} = useTranslation('settings')
   const [{result: pk}, callRpc] = useRpc()
   const [password, setPassword] = React.useState()
   const [showDialog, setShowDialog] = React.useState()
   React.useEffect(() => setShowDialog(!!pk), [pk])
   return (
-    <Section title="Export private key">
+    <Section title={t('Export private key')}>
       <Text css={{marginBottom: 10}}>
-        Create a new password to export your private key
+        {t('Create a new password to export your private key')}
       </Text>
       <form
         onSubmit={e => {
@@ -105,7 +109,7 @@ function ExportPK() {
           callRpc('dna_exportKey', password)
         }}
       >
-        <Label>New password</Label>
+        <Label>{t('New password')}</Label>
         <Flex align="center">
           <Input
             value={password}
@@ -118,7 +122,7 @@ function ExportPK() {
             onChange={e => setPassword(e.target.value)}
           />
           <Button type="submit" disabled={!password}>
-            Export
+            {t('Export')}
           </Button>
         </Flex>
       </form>
@@ -134,7 +138,7 @@ function ExportPK() {
         <Box>
           <Field
             id="pk"
-            label="Encrypted private key"
+            label={t('Encrypted private key')}
             defaultValue={pk}
             readonly
             disabled
@@ -147,6 +151,7 @@ function ExportPK() {
 }
 
 function ImportPK() {
+  const {t} = useTranslation(['settings', 'error'])
   const [password, setPassword] = React.useState()
   const [key, setKey] = React.useState()
   const {addError, addNotification} = useNotificationDispatch()
@@ -156,33 +161,38 @@ function ImportPK() {
     try {
       const {error} = await importKey(key, password)
       if (error) {
-        addError({title: 'Error while importing key', body: error.message})
+        addError({
+          title: t('error:Error while importing key'),
+          body: error.message,
+        })
       } else {
         importNodeKey()
         addNotification({
           title: 'Success',
-          body: 'Key was imported. Please, wait, while node is restarting.',
+          body: t('Key was imported. Please, wait, while node is restarting.'),
         })
         setKey('')
         setPassword('')
       }
     } catch (e) {
       addError({
-        title: 'Error while importing key',
-        body: 'Internal node is not available. Try again in a few seconds.',
+        title: t('error:Error while importing key'),
+        body: t(
+          'error:Internal node is not available. Try again in a few seconds.'
+        ),
       })
     }
   }
 
   return (
-    <Section title="Import private key">
+    <Section title={t('Import private key')}>
       <form
         onSubmit={async e => {
           e.preventDefault()
           await submit()
         }}
       >
-        <Label htmlFor="key">Encrypted private key</Label>
+        <Label htmlFor="key">{t('Encrypted private key')}</Label>
         <Input
           value={key}
           type="text"
@@ -192,7 +202,7 @@ function ImportPK() {
           }}
           onChange={e => setKey(e.target.value)}
         />
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">{t('Password')}</Label>
         <Input
           value={password}
           type="password"
@@ -203,7 +213,7 @@ function ImportPK() {
           onChange={e => setPassword(e.target.value)}
         />
         <Button type="submit" disabled={!password || !key}>
-          Import
+          {t('Import')}
         </Button>
       </form>
     </Section>
@@ -212,19 +222,21 @@ function ImportPK() {
 
 // eslint-disable-next-line react/prop-types
 function PkDialog({children, onHide, ...props}) {
+  const {t} = useTranslation()
   return (
     <Modal onHide={onHide} {...props}>
       <Box m="0 0 18px">
-        <SubHeading>Encrypted private key</SubHeading>
+        <SubHeading>{t('Encrypted private key')}</SubHeading>
         <Text>
-          Scan QR by your mobile phone or copy code below for export private
-          key.
+          {t(
+            'Scan QR by your mobile phone or copy code below for export privatekey.'
+          )}
         </Text>
         {children}
       </Box>
       <Flex align="center" justify="flex-end">
         <Button variant="secondary" onClick={onHide}>
-          Close
+          {t('Close')}
         </Button>
       </Flex>
     </Modal>
@@ -234,10 +246,16 @@ function PkDialog({children, onHide, ...props}) {
 function LocaleSwitcher() {
   const {i18n} = useTranslation()
   return (
-    <div>
-      <button onClick={() => i18n.changeLanguage('en')}>en</button>
-      <button onClick={() => i18n.changeLanguage('ru')}>ru</button>
-    </div>
+    <Box w={rem(200)}>
+      <Select
+        name="lng"
+        id="lng"
+        options={LANGS}
+        value={loadItem('settings', 'lng')}
+        onChange={e => i18n.changeLanguage(e.target.value)}
+        border="0"
+      />
+    </Box>
   )
 }
 

@@ -3,6 +3,8 @@ import {initReactI18next} from 'react-i18next'
 import en from '../locales/en'
 import ru from '../locales/ru'
 
+export const LANGS = ['en', 'ru']
+
 const resources = {
   en,
   ru,
