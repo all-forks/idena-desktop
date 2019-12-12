@@ -10,7 +10,8 @@
     "Private key": "Приватник",
     "Node": "Нода"
   },
-  "errors": {
-    "Something went wrong": "Что-то пошло не так"
+  "error": {
+    "Something went wrong": "Что-то пошло не так",
+    "Error while sending transaction": "Ошибка при отправке транзакции"
   }
 }
