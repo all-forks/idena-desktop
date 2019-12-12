@@ -4,12 +4,14 @@ import {usePersistence} from '../hooks/use-persistent-state'
 import {loadState} from '../utils/persist'
 import {BASE_API_URL, BASE_INTERNAL_API_PORT} from '../api/api-client'
 import useLogger from '../hooks/use-logger'
+import {LANGS} from '../../i18n'
 
 const SETTINGS_INITIALIZE = 'SETTINGS_INITIALIZE'
 const TOGGLE_USE_EXTERNAL_NODE = 'TOGGLE_USE_EXTERNAL_NODE'
 const TOGGLE_RUN_INTERNAL_NODE = 'TOGGLE_RUN_INTERNL_NODE'
 const SAVE_EXTERNAL_URL = 'SAVE_EXTERNAL_URL'
 const UPDATE_UI_VERSION = 'UPDATE_UI_VERSION'
+const CHANGE_LANGUAGE = 'CHANGE_LANGUAGE'
 
 const initialState = {
   url: BASE_API_URL,
@@ -19,6 +21,7 @@ const initialState = {
   uiVersion: global.appVersion,
   useExternalNode: false,
   runInternalNode: false,
+  lng: LANGS[0],
 }
 
 function settingsReducer(state, action) {
@@ -51,6 +54,12 @@ function settingsReducer(state, action) {
       return {
         ...state,
         uiVersion: action.data,
+      }
+    }
+    case CHANGE_LANGUAGE: {
+      return {
+        ...state,
+        lng: action.lng,
       }
     }
     default:
@@ -101,6 +110,8 @@ function SettingsProvider({children}) {
     dispatch({type: TOGGLE_RUN_INTERNAL_NODE, data: run})
   }
 
+  const changeLanguage = lng => dispatch({type: CHANGE_LANGUAGE, lng})
+
   return (
     <SettingsStateContext.Provider value={{...state, showTransferModal}}>
       <SettingsDispatchContext.Provider
@@ -109,6 +120,7 @@ function SettingsProvider({children}) {
           toggleUseExternalNode,
           toggleRunInternalNode,
           toggleTransferModal,
+          changeLanguage,
         }}
       >
         {children}

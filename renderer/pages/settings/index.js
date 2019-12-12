@@ -21,7 +21,10 @@ import useRpc from '../../shared/hooks/use-rpc'
 import SettingsLayout from './layout'
 import {importKey} from '../../shared/api'
 import {useNodeDispatch} from '../../shared/providers/node-context'
-import {useSettingsState} from '../../shared/providers/settings-context'
+import {
+  useSettingsState,
+  useSettingsDispatch,
+} from '../../shared/providers/settings-context'
 import {loadItem} from '../../shared/utils/persist'
 import {LANGS} from '../../i18n'
 
@@ -244,18 +247,24 @@ function PkDialog({children, onHide, ...props}) {
 }
 
 function LocaleSwitcher() {
-  const {i18n} = useTranslation()
+  const {t, i18n} = useTranslation()
+  const {changeLanguage} = useSettingsDispatch()
   return (
-    <Box w={rem(200)}>
-      <Select
-        name="lng"
-        id="lng"
-        options={LANGS}
-        value={loadItem('settings', 'lng')}
-        onChange={e => i18n.changeLanguage(e.target.value)}
-        border="0"
-      />
-    </Box>
+    <Section title={t('Language')}>
+      <Box w={rem(300)}>
+        <Select
+          name="lng"
+          id="lng"
+          options={LANGS}
+          value={loadItem('settings', 'lng')}
+          onChange={e => {
+            i18n.changeLanguage(e.target.value)
+            changeLanguage(e.target.value)
+          }}
+          border="0"
+        />
+      </Box>
+    </Section>
   )
 }
 
