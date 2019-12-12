@@ -1,7 +1,8 @@
 /* eslint-disable no-nested-ternary */
-import React, {useState, useCallback} from 'react'
+import React, {useState} from 'react'
 import PropTypes from 'prop-types'
 import {rem} from 'polished'
+import {useTranslation} from 'react-i18next'
 import {Drawer, Field} from '../../../shared/components'
 import theme from '../../../shared/theme'
 import {
@@ -9,7 +10,6 @@ import {
   useInviteState,
 } from '../../../shared/providers/invite-context'
 import {mapToFriendlyStatus} from '../../../shared/providers/identity-context'
-
 import ContactInfo from './contact-info'
 import ContactToolbar from './contact-toolbar'
 import {Figure} from '../../../shared/components/utils'
@@ -18,6 +18,7 @@ import RenameInvite from './invite-form'
 import {useNotificationDispatch} from '../../../shared/providers/notification-context'
 
 function InviteDetails({dbkey, onClose, onSelect}) {
+  const {t} = useTranslation('contacts')
   const [showRenameForm, setShowRenameForm] = useState(false)
   const {updateInvite, deleteInvite, recoverInvite} = useInviteDispatch()
   const {addNotificationWithAction} = useNotificationDispatch()
@@ -43,11 +44,11 @@ function InviteDetails({dbkey, onClose, onSelect}) {
     !activated
 
   const state = inviteIsExpired
-    ? 'Expired invitation'
+    ? t('Expired invitation')
     : identity && identity.state === 'Invite'
-    ? 'Invitation'
+    ? t('Invitation')
     : mining
-    ? 'Mining...'
+    ? t('Mining...')
     : identity && mapToFriendlyStatus(identity.state)
 
   return (
@@ -56,15 +57,13 @@ function InviteDetails({dbkey, onClose, onSelect}) {
         <ContactInfo {...invite} address={receiver} showMining={mining} />
 
         <ContactToolbar
-          onRename={() => {
-            setShowRenameForm(true)
-          }}
+          onRename={() => setShowRenameForm(true)}
           onDelete={() => {
             const id = dbkey
             deleteInvite(id)
             onClose()
             addNotificationWithAction({
-              title: `Invitation deleted`,
+              title: t(`Invitation deleted`),
               action: onDeleteUndo,
               actionName: 'Undo',
             })
@@ -79,15 +78,15 @@ function InviteDetails({dbkey, onClose, onSelect}) {
         />
 
         <div>
-          <Figure label="Status" value={state} />
+          <Figure label={t('Status')} value={state} />
           {identity &&
             identity.state !== 'Invite' &&
             !inviteIsExpired &&
-            !mining && <Figure label="Address" value={receiver} />}
+            !mining && <Figure label={t('Address')} value={receiver} />}
 
           {!inviteIsExpired && !activated && (
             <WideField
-              label="Invitation code"
+              label={t('Invitation code')}
               defaultValue={key}
               disabled
               allowCopy={!activated}
@@ -96,12 +95,7 @@ function InviteDetails({dbkey, onClose, onSelect}) {
         </div>
       </section>
 
-      <Drawer
-        show={showRenameForm}
-        onHide={() => {
-          setShowRenameForm(false)
-        }}
-      >
+      <Drawer show={showRenameForm} onHide={() => setShowRenameForm(false)}>
         <RenameInvite
           {...invite}
           onSave={async (firstName, lastName) => {

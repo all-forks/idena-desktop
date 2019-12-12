@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {FiUsers} from 'react-icons/fi'
+import {useTranslation} from 'react-i18next'
 import {Box, Drawer, Placeholder} from '../../../shared/components'
 import Layout from '../../../shared/components/layout'
 import Flex from '../../../shared/components/flex'
@@ -9,9 +10,10 @@ import {ContactProvider} from '../../../shared/providers/contact-context'
 import Sidebar from './sidebar'
 import SendInviteForm from './send-invite-form'
 import InviteDetails from './invite-details'
-import {useInviteState} from '../../../shared/providers/invite-context'
 
 function ContactsPage({showNewInviteForm = false}) {
+  const {t} = useTranslation()
+
   const [selectedContact, setSelectedContact] = React.useState(null)
   const [selectedInvite, setSelectedInvite] = React.useState(null)
   const [showInvite, setShowInvite] = React.useState(false)
@@ -20,11 +22,7 @@ function ContactsPage({showNewInviteForm = false}) {
   const [isSendInviteOpen, setIsSendInviteOpen] = React.useState(
     showNewInviteForm
   )
-  const handleCloseSendInvite = () => {
-    setIsSendInviteOpen(false)
-  }
-
-  const {invites} = useInviteState()
+  const handleCloseSendInvite = () => setIsSendInviteOpen(false)
 
   return (
     <ContactProvider>
@@ -36,9 +34,7 @@ function ContactsPage({showNewInviteForm = false}) {
               setSelectedInvite(invite)
               setShowInvite(true)
             }}
-            onNewInvite={() => {
-              setIsSendInviteOpen(true)
-            }}
+            onNewInvite={() => setIsSendInviteOpen(true)}
           />
           <Box
             css={{
@@ -51,9 +47,7 @@ function ContactsPage({showNewInviteForm = false}) {
               <InviteDetails
                 {...selectedInvite}
                 code={selectedInvite && selectedInvite.key}
-                onClose={() => {
-                  setShowInvite(false)
-                }}
+                onClose={() => setShowInvite(false)}
                 onSelect={invite => {
                   setShowInvite(true)
                   setSelectedInvite(invite)
@@ -68,7 +62,7 @@ function ContactsPage({showNewInviteForm = false}) {
                 icon={<FiUsers />}
                 text={
                   <>
-                    You haven’t selected contacts yet. <br />
+                    {t('You haven’t selected contacts yet.')} <br />
                   </>
                 }
               />
