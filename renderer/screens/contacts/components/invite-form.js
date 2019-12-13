@@ -17,7 +17,7 @@ import useFullName from '../../../shared/hooks/use-full-name'
 import useUsername from '../../../shared/hooks/use-username'
 
 function RenameInvite({receiver, firstName, lastName, onSave}) {
-  const {t} = useTranslation()
+  const {t} = useTranslation('contacts')
 
   const fullName = useFullName({firstName, lastName})
 

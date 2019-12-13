@@ -24,7 +24,7 @@ function DisplayInvite({
   lastName,
   code,
 }) {
-  const {t} = useTranslation()
+  const {t} = useTranslation('contacts')
   const fullName = useFullName({firstName, lastName})
   const readonly = mined
   return (

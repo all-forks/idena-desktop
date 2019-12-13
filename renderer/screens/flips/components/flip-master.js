@@ -154,9 +154,10 @@ function FlipMaster({id, onClose}) {
     {
       caption: t('Think up a story'),
       title: t('Think up a story'),
-      desc: t(
-        'Think up a short story about someone/something related to the two key words below according to the template: "Before - Something happens - After"'
-      ),
+      desc: `${t(
+        'Think up a short story about someone/something related to the two key words below according to the template'
+      )}: ${t('Before - Something happens - After')}'
+      )`,
       children: (
         <FlipHint
           {...flip}

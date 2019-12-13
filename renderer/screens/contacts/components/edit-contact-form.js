@@ -5,7 +5,7 @@ import {Box, Button, FormGroup, Label, Input} from '../../../shared/components'
 import Avatar from '../../../shared/components/avatar'
 
 export function EditContactForm({name, lastName, addr, onSave}) {
-  const {t} = useTranslation()
+  const {t} = useTranslation('contacts')
   const nameRef = useRef(null)
   const lastNameRef = useRef(null)
   const addrRef = useRef(null)

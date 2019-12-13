@@ -16,7 +16,7 @@ import {
 import {useNotificationDispatch} from '../../../shared/providers/notification-context'
 
 function ActivateInviteForm() {
-  const {t} = useTranslation()
+  const {t} = useTranslation('contacts')
   const keyRef = useRef()
 
   const {addError} = useNotificationDispatch()

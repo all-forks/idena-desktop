@@ -80,7 +80,7 @@ function WalletCard({wallet, main, onSend, onReceive, onWithdrawStake}) {
     setIsMenuOpen(false)
   })
 
-  const {t} = useTranslation()
+  const {t} = useTranslation('wallets')
 
   return (
     <Box

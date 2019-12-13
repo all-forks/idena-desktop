@@ -25,7 +25,6 @@ import {
   useSettingsState,
   useSettingsDispatch,
 } from '../../shared/providers/settings-context'
-import {loadPersistentStateValue} from '../../shared/utils/persist'
 import {LANGS} from '../../i18n'
 
 const {clear: clearFlips} = global.flipStore || {}
@@ -225,7 +224,7 @@ function ImportPK() {
 
 // eslint-disable-next-line react/prop-types
 function PkDialog({children, onHide, ...props}) {
-  const {t} = useTranslation()
+  const {t} = useTranslation('settings')
   return (
     <Modal onHide={onHide} {...props}>
       <Box m="0 0 18px">
@@ -247,7 +246,7 @@ function PkDialog({children, onHide, ...props}) {
 }
 
 function LocaleSwitcher() {
-  const {t, i18n} = useTranslation()
+  const {t, i18n} = useTranslation('settings')
   const {changeLanguage} = useSettingsDispatch()
   return (
     <Section title={t('Language')}>

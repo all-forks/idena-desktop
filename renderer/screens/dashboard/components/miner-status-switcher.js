@@ -94,7 +94,7 @@ function MinerStatusSwitcher() {
     }
   }, [mined])
 
-  const {t} = useTranslation()
+  const {t} = useTranslation('profile')
 
   if (!identity.canMine) {
     return null

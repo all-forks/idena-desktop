@@ -6,7 +6,7 @@ import {Box, Text} from '../../../shared/components'
 import theme from '../../../shared/theme'
 
 function TotalAmount({amount, percentChanges, amountChanges}) {
-  const {t} = useTranslation()
+  const {t} = useTranslation('wallets')
   return (
     <Box>
       <Box>

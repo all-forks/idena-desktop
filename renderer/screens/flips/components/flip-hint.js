@@ -10,7 +10,7 @@ import {TranslateWords} from '../../../shared/components/translate-button'
 import {FlatButton} from '../../../shared/components/button'
 
 function FlipHint({hint, onChange}) {
-  const {t} = useTranslation()
+  const {t} = useTranslation('flips')
   const bntLabel = hint && hint.id >= 0 ? `(#${hint.id + 1})` : '(#1)'
   return (
     <Box>

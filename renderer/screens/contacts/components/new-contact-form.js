@@ -12,7 +12,7 @@ import {
 import Avatar from '../../../shared/components/avatar'
 
 export function NewContactForm({name, lastName, addr, username, onSave}) {
-  const {t} = useTranslation()
+  const {t} = useTranslation('contacts')
 
   const nameRef = useRef(null)
   const lastNameRef = useRef(null)

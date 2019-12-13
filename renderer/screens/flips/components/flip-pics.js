@@ -26,7 +26,7 @@ const reorder = (list, startIndex, endIndex) => {
 }
 
 function FlipPics({id, pics, hint, onUpdateFlip}) {
-  const {t} = useTranslation()
+  const {t} = useTranslation('flips')
 
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [pickedUrl, setPickedUrl] = useState('')

@@ -7,7 +7,7 @@ import theme from '../../../shared/theme'
 import {Box, SubHeading, FormGroup, Field} from '../../../shared/components'
 
 function ReceiveForm({address}) {
-  const {t} = useTranslation()
+  const {t} = useTranslation('wallets')
   return (
     <Box
       css={padding(rem(theme.spacings.large48), rem(theme.spacings.medium32))}

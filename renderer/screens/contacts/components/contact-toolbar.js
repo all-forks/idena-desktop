@@ -8,7 +8,7 @@ import Actions from '../../../shared/components/actions'
 import IconLink from '../../../shared/components/icon-link'
 
 export default function ContactToolbar({onRename, onDelete}) {
-  const {t} = useTranslation()
+  const {t} = useTranslation('contacts')
   return (
     <Box
       py={theme.spacings.large}

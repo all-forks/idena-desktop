@@ -24,7 +24,7 @@ import {useChainState} from '../../shared/providers/chain-context'
 import {FlatButton} from '../../shared/components/button'
 
 export default function Index() {
-  const {t} = useTranslation()
+  const {t} = useTranslation('wallets')
   const {wallets, totalAmount, fetching} = useWallets()
 
   const [isReceiveFormOpen, setIsReceiveFormOpen] = React.useState(false)

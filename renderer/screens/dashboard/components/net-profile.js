@@ -21,7 +21,7 @@ export function NetProfile() {
     totalQualifiedFlips,
     totalShortFlipPoints,
   } = useIdentityState()
-  const {t} = useTranslation()
+  const {t} = useTranslation('profile')
   return (
     <Box
       bg={theme.colors.gray}

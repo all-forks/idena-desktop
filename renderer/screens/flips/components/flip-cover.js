@@ -89,7 +89,7 @@ function FlipCover({
   onSubmit,
   onDelete,
 }) {
-  const {t} = useTranslation()
+  const {t} = useTranslation('flips')
 
   const {canSubmitFlip} = useIdentityState()
   const {syncing} = useChainState()
@@ -188,7 +188,7 @@ function FlipCover({
       </Box>
       <Box my={theme.spacings.small}>
         <Text color={theme.colors.muted} fontSize={theme.fontSizes.small}>
-          {t('Modified:')} {new Date(createdAt || modifiedAt).toLocaleString()}
+          {t('Modified')}: {new Date(createdAt || modifiedAt).toLocaleString()}
         </Text>
       </Box>
     </Box>

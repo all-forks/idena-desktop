@@ -12,7 +12,7 @@ import SendInviteForm from './send-invite-form'
 import InviteDetails from './invite-details'
 
 function ContactsPage({showNewInviteForm = false}) {
-  const {t} = useTranslation()
+  const {t} = useTranslation('contacts')
 
   const [selectedContact, setSelectedContact] = React.useState(null)
   const [selectedInvite, setSelectedInvite] = React.useState(null)
