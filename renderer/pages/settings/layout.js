@@ -13,7 +13,7 @@ import FlipToolbar, {
 
 function SettingsLayout({children}) {
   const router = useRouter()
-  const {t} = useTranslation('settings')
+  const {t} = useTranslation()
 
   return (
     <Layout>

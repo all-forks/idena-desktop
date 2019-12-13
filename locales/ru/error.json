@@ -1,0 +1,14 @@
+{
+  "Can not submit flip": "__NOT_TRANSLATED__",
+  "Keywords are not specified": "__NOT_TRANSLATED__",
+  "Error while uploading flip": "__NOT_TRANSLATED__",
+  "Something went wrong": "__NOT_TRANSLATED__",
+  "Maximum image size exceeded": "__NOT_TRANSLATED__",
+  "Error while importing key": "__NOT_TRANSLATED__",
+  "Internal node is not available, try again in a few seconds": "__NOT_TRANSLATED__",
+  "You can not submit flips having 'Candidate' status": "__NOT_TRANSLATED__",
+  "You cannot submit more flips until the next validation": "__NOT_TRANSLATED__",
+  "Can not submit flip during the validation session": "__NOT_TRANSLATED__",
+  "Error while sending transaction": "__NOT_TRANSLATED__",
+  "Transaction sent": "__NOT_TRANSLATED__"
+}

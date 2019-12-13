@@ -171,7 +171,7 @@ function ImportPK() {
         importNodeKey()
         addNotification({
           title: 'Success',
-          body: t('Key was imported. Please, wait, while node is restarting.'),
+          body: t('Key was imported, please, wait, while node is restarting'),
         })
         setKey('')
         setPassword('')
@@ -180,7 +180,7 @@ function ImportPK() {
       addError({
         title: t('error:Error while importing key'),
         body: t(
-          'error:Internal node is not available. Try again in a few seconds.'
+          'error:Internal node is not available, try again in a few seconds'
         ),
       })
     }
@@ -228,7 +228,7 @@ function PkDialog({children, onHide, ...props}) {
   return (
     <Modal onHide={onHide} {...props}>
       <Box m="0 0 18px">
-        <SubHeading>{t('Encrypted private key')}</SubHeading>
+        <SubHeading>{t('settings:Encrypted private key')}</SubHeading>
         <Text>
           {t(
             'Scan QR by your mobile phone or copy code below for export privatekey.'

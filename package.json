@@ -14,7 +14,8 @@
     "clean": "rm -rf renderer/out dist",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "jest"
+    "test": "jest",
+    "i18n:scan": "i18next-scanner"
   },
   "build": {
     "appId": "io.idena",
@@ -55,6 +56,7 @@
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.12.4",
     "eslint-plugin-react-hooks": "^1.6.0",
+    "i18next-scanner": "^2.10.3",
     "jest": "^24.9.0",
     "prettier": "^1.16.4",
     "react-dom": "^16.8.4",

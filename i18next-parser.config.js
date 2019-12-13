@@ -5,7 +5,7 @@ module.exports = {
   createOldCatalogs: true,
   // Save the \_old files
 
-  defaultNamespace: 'translation',
+  defaultNamespace: 'common',
   // Default namespace used in your i18next config
 
   defaultValue: '',
@@ -23,10 +23,6 @@ module.exports = {
 
   // see below for more details
   lexers: {
-    hbs: ['HandlebarsLexer'],
-    handlebars: ['HandlebarsLexer'],
-
-    htm: ['HTMLLexer'],
     html: ['HTMLLexer'],
 
     mjs: ['JavascriptLexer'],
@@ -53,7 +49,7 @@ module.exports = {
   // Supports JSON (.json) and YAML (.yml) file formats
   // Where to write the locale files relative to process.cwd()
 
-  input: undefined,
+  input: ['renderer/**/*.{js,jsx}'],
   // An array of globs that describe where to look for source files
   // relative to the location of the configuration file
 
