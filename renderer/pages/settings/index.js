@@ -25,7 +25,7 @@ import {
   useSettingsState,
   useSettingsDispatch,
 } from '../../shared/providers/settings-context'
-import {loadItem} from '../../shared/utils/persist'
+import {loadPersistentStateValue} from '../../shared/utils/persist'
 import {LANGS} from '../../i18n'
 
 const {clear: clearFlips} = global.flipStore || {}
@@ -256,12 +256,11 @@ function LocaleSwitcher() {
           name="lng"
           id="lng"
           options={LANGS}
-          value={loadItem('settings', 'lng')}
+          value={i18n.language}
           onChange={e => {
             i18n.changeLanguage(e.target.value)
             changeLanguage(e.target.value)
           }}
-          border="0"
         />
       </Box>
     </Section>

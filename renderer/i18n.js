@@ -2,7 +2,7 @@ import i18n from 'i18next'
 import {initReactI18next} from 'react-i18next'
 import en from '../locales/en'
 import ru from '../locales/ru'
-import {loadItem} from './shared/utils/persist'
+import {loadPersistentStateValue} from './shared/utils/persist'
 
 export const LANGS = ['en', 'ru']
 
@@ -12,8 +12,9 @@ const resources = {
 }
 
 i18n.use(initReactI18next).init({
+  debug: global.isDev,
   resources,
-  lng: loadItem('settings', 'lng'),
+  lng: loadPersistentStateValue('settings', 'lng'),
   fallbackLng: 'en',
 
   keySeparator: false,

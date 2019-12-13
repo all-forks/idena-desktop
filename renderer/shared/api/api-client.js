@@ -1,11 +1,11 @@
 import axios from 'axios'
-import {loadState} from '../utils/persist'
+import {loadPersistentState} from '../utils/persist'
 
 export const BASE_INTERNAL_API_PORT = 9119
 export const BASE_API_URL = 'http://localhost:9009'
 
 function getUrl() {
-  const state = loadState('settings')
+  const state = loadPersistentState('settings')
   if (!state) {
     return `http://localhost:${BASE_INTERNAL_API_PORT}`
   }

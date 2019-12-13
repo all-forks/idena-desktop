@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import semver from 'semver'
 import {usePersistence} from '../hooks/use-persistent-state'
-import {loadState} from '../utils/persist'
+import {loadPersistentState} from '../utils/persist'
 import {BASE_API_URL, BASE_INTERNAL_API_PORT} from '../api/api-client'
 import useLogger from '../hooks/use-logger'
 import {LANGS} from '../../i18n'
@@ -76,7 +76,10 @@ function SettingsProvider({children}) {
 
   const [state, dispatch] = usePersistence(
     useLogger(
-      React.useReducer(settingsReducer, loadState('settings') || initialState)
+      React.useReducer(
+        settingsReducer,
+        loadPersistentState('settings') || initialState
+      )
     ),
     'settings'
   )
